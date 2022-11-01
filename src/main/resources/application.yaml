@@ -1,0 +1,35 @@
+server:
+  port: 9671
+
+spring:
+  application:
+    name: zuul-proxy
+
+eureka:
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+zuul:
+  routes:
+    view-games:
+      path: /games/**
+      serviceId: view-games
+    edit-games:
+      path: /games/**
+      serviceId: edit-games
+    cart-management:
+      path: /carts/**
+      serviceId: cart-management
+    order-games:
+      path: /orders/**
+      serviceId: order-games
+    user-management:
+      path: /users/**
+      serviceId: user-management
+  host:
+    socket-timeout-millis: 30000
