@@ -27,6 +27,7 @@ spring:
             - Path=/orders/**
           filters:
             - StripPrefix=1
+            - Auth=
         - id: users
           uri: lb://users
           predicates:
