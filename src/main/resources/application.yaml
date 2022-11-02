@@ -2,34 +2,67 @@ server:
   port: 9671
 
 spring:
+  main:
+    web-application-type: reactive
   application:
-    name: zuul-proxy
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: carts
+          uri: lb://carts
+          predicates:
+            - Path=/carts/**
+          filters:
+            - StripPrefix=1
+        - id: edit
+          uri: lb://edit
+          predicates:
+            - Path=/edit/**
+          filters:
+            - StripPrefix=1
+        - id: orders
+          uri: lb://orders
+          predicates:
+            - Path=/orders/**
+          filters:
+            - StripPrefix=1
+        - id: users
+          uri: lb://users
+          predicates:
+            - Path=/users/**
+          filters:
+            - StripPrefix=1
+        - id: view
+          uri: lb://view
+          predicates:
+            - Path=/view/**
+          filters:
+            - StripPrefix=1
+        - id: registry
+          uri: lb://registry
+          predicates:
+            - Path=/registry/**
+          filters:
+            - StripPrefix=1
+        - id: eureka
+          uri: lb://registry
+          predicates:
+            - Path=/eureka/**
 
 eureka:
   client:
-    registerWithEureka: true
-    fetchRegistry: true
+    register-with-eureka: true
+    fetch-registry: true
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+    healthcheck:
+      enabled: true
   instance:
     preferIpAddress: true
 
-zuul:
-  routes:
-    view-games:
-      path: /games/**
-      serviceId: view-games
-    edit-games:
-      path: /games/**
-      serviceId: edit-games
-    cart-management:
-      path: /carts/**
-      serviceId: cart-management
-    order-games:
-      path: /orders/**
-      serviceId: order-games
-    user-management:
-      path: /users/**
-      serviceId: user-management
-  host:
-    socket-timeout-millis: 30000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
